@@ -4,29 +4,20 @@ namespace Knight
 {
 	/// <summary>
 	/// The number class within Knight
-	/// </summmary>
+	/// </summary>
 	/// <remarks>
 	/// Note that Knight only uses integers. As such, the <c>Number</c> class is simply a wrapper around <c>long</c>
 	/// </remarks>
 	public class Number : Literal<long>, IComparable<IValue>
 	{
-		/// <inheritdoc/>
-		public Number(long data) : base(data) {}
-
-		/// <summary>
-		/// Attempts to parse a <c>Number</c> from the given <paramref name="stream"/>, returnning <see langword="null"/> if nothing could be parsed.
-		/// </summary>
-		/// <param name="stream">
-		/// The stream from which to parse.
-		/// </param>
-		/// <returns>
-		/// The parsed <c>Number</c>, or <see langword="null"/> if the <paramref name="stream"> didn't start with a digit (ie <c>0</c> through <c>9</c>).
-		/// </returns>
 		internal static Number Parse(Stream stream) {
 			var contents = stream.TakeWhileIfStartsWith(char.IsDigit);
 			
 			return contents == null ? null : new Number(long.Parse(contents));
 		}
+
+		/// <inheritdoc/>
+		public Number(long data) : base(data) {}
 
 		/// <inheritdoc />
 		public override void Dump() => Console.Write($"Number({this})");

@@ -45,7 +45,7 @@ namespace Knight
 		/// Returns whether <c>this</c> is equivalent to <paramref name="obj"/>.
 		/// </summary>
 		/// <remarks>
-		/// Two <c>this</c> is considered equialent to <paramref name="obj"/> if they are both of the same type and their <c>_data</c>s are equal.
+		/// Two <c>this</c> is considered equivalent to <paramref name="obj"/> if they are both of the same type and their <c>_data</c>s are equal.
 		/// </remarks>
 		public bool Equals(IValue obj) => GetType() == obj.GetType() && _data.Equals(((Literal<T>) obj)._data);
 

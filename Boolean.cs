@@ -7,16 +7,7 @@ namespace Knight
 	/// </summary>
 	public class Boolean : Literal<bool>, IComparable<IValue>
 	{
-		/// <inheritdoc/>
-		public Boolean(bool data) : base(data) {}
-
-		/// <summary>
-		/// Attempts to parse a <c>Boolean</c> from the given <paramref name="stream"/>, returnning <see langword="null"/> if nothing could be parsed.
-		/// </summary>
-		/// <returns>
-		/// The parsed <c>Boolean</c>, or <see langword="null"/> if the <paramref name="stream"> didn't start with <c>T</c> or <c>F</c>.
-		/// </returns>
-		public static Boolean Parse(Stream stream) {
+		internal static Boolean Parse(Stream stream) {
 			if (!stream.StartsWith('T', 'F'))
 				return null;
 
@@ -25,6 +16,9 @@ namespace Knight
 
 			return ret;
 		}
+
+		/// <inheritdoc/>
+		public Boolean(bool data) : base(data) {}
 		
 		/// <inheritdoc/>
 		public override void Dump() => Console.Write($"Boolean({this})");

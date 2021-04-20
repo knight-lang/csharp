@@ -11,18 +11,6 @@ namespace Knight
 	/// </remarks>
 	public class Text : Literal<string>, IComparable<IValue>
 	{
-		/// <inheritdoc/>
-		public Text(string data) : base(data) {}
-
-		/// <summary>
-		/// Attempts to parse a <c>Text</c> from the given <paramref name="stream"/>, returnning <see langword="null"/> if nothing could be parsed.
-		/// </summary>
-		/// <param name="stream">
-		/// The stream from which to parse.
-		/// </param>
-		/// <returns>
-		/// The parsed <c>Text</c>, or <see langword="null"/> if the <paramref name="stream"> didn't start with a quote (ie <c>'</c> or <c>"</c>).
-		/// </returns>
 		internal static Text Parse(Stream stream) {
 			if (!stream.StartsWith('\'', '\"'))
 				return null;
@@ -41,6 +29,9 @@ namespace Knight
 		}
 
 		/// <inheritdoc/>
+		public Text(string data) : base(data) {}
+
+		/// <inheritdoc/>
 		public override void Dump() => Console.Write($"String({_data})");
 
 		/// <summary>
@@ -52,8 +43,8 @@ namespace Knight
 		/// Converts <c>this</c> to a <c>long</c>, according to the Knight specs.
 		/// </summary>
 		/// <remarks>
-		/// Roughly, you strip all leading whitespace, and then read an optional <c>+</c> or <c>-</c>, and then take as many digit chars as possible,
-		/// returning <c>0</c> if there are no valid leading digits.
+		/// Roughly, you strip all leading whitespace, and then read an optional <c>+</c> or <c>-</c>, and then take as many
+		/// digit chars as possible, returning <c>0</c> if there are no valid leading digits.
 		/// </summary>
 		public override long ToLong() {
 			long ret = 0;

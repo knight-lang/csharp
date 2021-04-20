@@ -6,7 +6,8 @@ namespace Knight
 	/// A helper type that is used as the type parameter for <c>Null</c>.
 	/// </summary>
 	/// <remarks>
-	/// This isn't meant to be used outside of Knight, and is only <c>public</c> ecause it's needed for <c>Literal</c>'s constructor..
+	/// This isn't meant to be used outside of Knight, and is only <c>public</c> because it's needed for <c>Literal</c>'s constructor.
+	/// </remarks>
 	public struct _unit : IEquatable<_unit> {
 		public bool Equals(_unit rhs) => true;
 	}
@@ -16,15 +17,6 @@ namespace Knight
 	/// </summary>
 	public class Null : Literal<_unit>
 	{
-		/// <summary>
-		/// Attempts to parse a <c>Null</c> from the given <paramref name="stream"/>, returnning <see langword="null"/> if nothing could be parsed.
-		/// </summary>
-		/// <param name="stream">
-		/// The stream from which to parse.
-		/// </param>
-		/// <returns>
-		/// The parsed <c>Null</c>, or <see langword="null"/> if the <paramref name="stream"> didn't start with a <c>N</c>.
-		/// </returns>
 		internal static Null Parse(Stream stream) {
 			if (!stream.StartsWith('N'))
 				return null;

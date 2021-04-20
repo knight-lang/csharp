@@ -13,7 +13,7 @@ namespace Knight
 	}
 
 	/// <summary>
-	/// An exception occured whilst running Knight code.
+	/// An exception occurred whilst running Knight code.
 	/// </summary>
 	public class RuntimeException : KnightException
 	{
@@ -25,7 +25,7 @@ namespace Knight
 	}
 
 	/// <summary>
-	/// An exception occured whilst parsing Knight code.
+	/// An exception occurred whilst parsing Knight code.
 	/// </summary>
 	public class ParseException : KnightException
 	{

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Knight
 {
-	public class Stream
+	internal class Stream
 	{
 		public string Source { get; private set; }
 		public delegate bool Condition(char c);
@@ -20,11 +20,10 @@ namespace Knight
 		public string TakeWhileIfStartsWith(char chr, Condition body) => TakeWhileIfStartsWith(c => c == chr, body);
 		public string TakeWhileIfStartsWith(char[] chars, Condition body) => TakeWhileIfStartsWith(chars.Contains, body);
 		public string TakeWhileIfStartsWith(Condition initial, Condition body = null) {
-			if (!initial(Source[0])) {
+			if (!initial(Source[0]))
 				return null;
-			} else {
-				return Take() + (TakeWhile(body ?? initial) ?? "");
-			}
+			
+			return Take() + (TakeWhile(body ?? initial) ?? "");
 		}
 
 		public char Take() {
@@ -36,9 +35,8 @@ namespace Knight
 		public string TakeWhile(Condition condition) {
 			var ret = "";
 
-			while (!IsEmpty() && condition(Source[0])) {
+			while (!IsEmpty() && condition(Source[0]))
 				ret += Take();
-			}
 
 			return ret == "" ? null : ret;
 		}

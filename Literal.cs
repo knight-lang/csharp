@@ -33,7 +33,7 @@ namespace Knight
 		public abstract void Dump();
 
 		/// <inheritdoc/>
-		public override string ToString() => _data.ToString();
+		public override string ToString() => _data.ToString()!;
 
 		/// <inheritdoc/>
 		public abstract bool ToBool();
@@ -41,13 +41,15 @@ namespace Knight
 		/// <inheritdoc/>
 		public abstract long ToLong();
 
+		public abstract IValue[] ToList();
+
 		/// <summary>
 		/// Returns whether <c>this</c> is equivalent to <paramref name="obj"/>.
 		/// </summary>
 		/// <remarks>
 		/// Two <c>this</c> is considered equivalent to <paramref name="obj"/> if they are both of the same type and their <c>_data</c>s are equal.
 		/// </remarks>
-		public bool Equals(IValue obj) => GetType() == obj.GetType() && _data.Equals(((Literal<T>) obj)._data);
+		public bool Equals(IValue? obj) => obj != null && GetType() == obj.GetType() && _data.Equals(((Literal<T>) obj)._data);
 
 		/// <inheritdoc/>
 		public virtual IValue Add(IValue rhs) => throw new NotImplementedException($"Add isn't implemented for {GetType()}");

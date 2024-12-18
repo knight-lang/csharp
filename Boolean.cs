@@ -7,7 +7,7 @@ namespace Knight
 	/// </summary>
 	public class Boolean : Literal<bool>, IComparable<IValue>
 	{
-		internal static Boolean Parse(Stream stream) {
+		internal static Boolean? Parse(Stream stream) {
 			if (!stream.StartsWith('T', 'F'))
 				return null;
 
@@ -21,7 +21,7 @@ namespace Knight
 		public Boolean(bool data) : base(data) {}
 		
 		/// <inheritdoc/>
-		public override void Dump() => Console.Write($"Boolean({this})");
+		public override void Dump() => Console.Write(this);
 
 		/// <summary>
 		/// Returns <c>"true"</c> or <c>"false"</c>.
@@ -38,6 +38,8 @@ namespace Knight
 		/// </summary>
 		public override long ToLong() => _data ? 1 : 0;
 
+		public override IValue[] ToList() => _data ? new IValue[]{ this } : new IValue[]{};
+
 		/// <summary>
 		/// Compares <c>this</c> to <paramref name="obj"/>.
 		/// </summary>
@@ -45,6 +47,6 @@ namespace Knight
 		/// Returns <c>-1</c> if <c>this</c> is false and <paramref name="obj"/> is truthy, <c>1</c> if <c>this</c> is 
 		/// true and <paramref name="obj"/> is falsey, and <c>0</c> otherwise.
 		/// </returns>
-		public int CompareTo(IValue obj) => _data.CompareTo(obj.ToBool());
+		public int CompareTo(IValue? obj) => _data.CompareTo(obj?.ToBool());
 	}
 }

@@ -26,10 +26,12 @@ namespace Knight
 		/// </summary>
 		public bool ToBool() => Run().ToBool();
 
+		public IValue[] ToList() => Run().ToList();
+
 		/// <summary>
 		/// Checks to see if the result of <c>Run</c>ning <c>this</c> is equal to the result of <c>Run</c>ing <paramref name="obj"/>.
 		/// </summary>
-		public bool Equals(IValue obj) => false; 
+		public bool Equals(IValue? obj) => false; 
 
 		/// <summary>
 		/// Takes the result of <c>Run</c>ning <c>this</c> and adds to it the result of <c>Run</c>ing <paramref name="rhs"/>.

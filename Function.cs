@@ -57,12 +57,14 @@ namespace Knight
 		/// </summary>
 		public static void Register(char name, int arity, FunctionBody body) => FUNCTIONS[name] = (body, arity);
 
-		internal static Function Parse(Stream stream) {
-			(FunctionBody, int) func = (null, 0);
+		internal static Function? Parse(Stream stream) {
+			(FunctionBody?, int) func = (null, 0);
 			char name;
 
+			#nullable disable
 			if (!stream.StartsWith(c => FUNCTIONS.TryGetValue(c, out func)))
 				return null;
+			#nullable enable
 
 			if (char.IsUpper(name = stream.Take()))
 				stream.StripKeyword();
@@ -70,11 +72,10 @@ namespace Knight
 			var args = new IValue[func.Item2];
 
 			for (int i = 0; i < func.Item2; ++i) {
-				if ((args[i] = Kn.Parse(stream)) == null)
-					throw new ParseException($"Unable to parse variable '{i}' for function '{name}'.");
+				args[i] = Kn.Parse(stream) ?? throw new ParseException($"Unable to parse variable '{i}' for function '{name}'.");
 			}
 
-			return new Function(func.Item1, name, args);
+			return new Function(func.Item1!, name, args);
 		}
 
 		private static readonly Random RANDOM = new Random();
@@ -82,12 +83,15 @@ namespace Knight
 		/// <summary>
 		/// Reads a line from stdin.
 		/// </summary>
-		private static IValue Prompt(params IValue[] args) => new Text(Console.ReadLine());
+		private static IValue Prompt(params IValue[] args) {
+			var line = Console.ReadLine();
+			return line == null ? (IValue) new Null() : (IValue)new Text(line);
+		}
 
 		/// <summary>
 		/// Returns a random <c>long</c>.
 		/// </summary>
-		private static IValue Random(params IValue[] args) => new Number(RANDOM.Next());
+		private static IValue Random(params IValue[] args) => new Integer(RANDOM.Next());
 
 
 		/// <summary>
@@ -143,7 +147,7 @@ namespace Knight
 		/// <summary>
 		/// Converts the first argument to a string, then returns its length.
 		/// </summary>
-		private static IValue Length(params IValue[] args) => new Number(args[0].ToString().Length);
+		private static IValue Length(params IValue[] args) => new Integer(args[0].ToString().Length);
 
 		/// <summary>
 		/// Dumps the first argument to stdout, then returns it.
@@ -151,7 +155,6 @@ namespace Knight
 		private static IValue Dump(params IValue[] args) {
 			var val = args[0].Run();
 			val.Dump();
-			Console.WriteLine();
 			return val;	
 		}
 
@@ -164,7 +167,7 @@ namespace Knight
 		private static IValue Output(params IValue[] args) {
 			var val = args[0].ToString();
 
-			if (val != "" && val[val.Length - 1] == '\\') {
+			if (val != "" && val[^1] == '\\') {
 				Console.Write(val.Remove(val.Length - 1));
 			} else {
 				Console.WriteLine(val);
@@ -172,6 +175,16 @@ namespace Knight
 
 			return new Null();
 		}
+
+		/// <summary>
+		/// Returns the numerical negation of the first argument.
+		/// </summary>
+		private static IValue Negate(params IValue[] args) => new Integer(-args[0].ToLong());
+
+		private static IValue Ascii(params IValue[] args) => throw new Exception("TODO");
+		private static IValue Box(params IValue[] args) => new List(args[0].Run());
+		private static IValue Head(params IValue[] args) => throw new Exception("TODO");
+		private static IValue Tail(params IValue[] args) => throw new Exception("TODO");
 
 		/// <summary>
 		/// Adds the first and second arguments together.
@@ -308,6 +321,11 @@ namespace Knight
 			Register('L', 1, Length);
 			Register('D', 1, Dump);
 			Register('O', 1, Output);
+			Register('~', 1, Negate);
+			Register('A', 1, Ascii);
+			Register(',', 1, Box);
+			Register('[', 1, Head);
+			Register(']', 1, Tail);
 
 			Register('+', 2, Add);
 			Register('-', 2, Sub);

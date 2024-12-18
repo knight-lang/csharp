@@ -17,9 +17,11 @@ namespace Knight
 
 		public void StripKeyword() => TakeWhile(c => char.IsUpper(c) || c == '_');
 
-		public string TakeWhileIfStartsWith(char chr, Condition body) => TakeWhileIfStartsWith(c => c == chr, body);
-		public string TakeWhileIfStartsWith(char[] chars, Condition body) => TakeWhileIfStartsWith(chars.Contains, body);
-		public string TakeWhileIfStartsWith(Condition initial, Condition body = null) {
+		public char? TakeIfStartsWith(params char[] chars) => StartsWith(chars) ? (char?) Take() : null;
+
+		public string? TakeWhileIfStartsWith(char chr, Condition body) => TakeWhileIfStartsWith(c => c == chr, body);
+		public string? TakeWhileIfStartsWith(char[] chars, Condition body) => TakeWhileIfStartsWith(chars.Contains, body);
+		public string? TakeWhileIfStartsWith(Condition initial, Condition? body = null) {
 			if (!initial(Source[0]))
 				return null;
 			
@@ -32,7 +34,7 @@ namespace Knight
 			return c;
 		}
 
-		public string TakeWhile(Condition condition) {
+		public string? TakeWhile(Condition condition) {
 			var ret = "";
 
 			while (!IsEmpty() && condition(Source[0]))

@@ -8,14 +8,14 @@ namespace Knight
 	/// </summary>
 	public class Kn
 	{
-		internal static IValue Parse(Stream stream) {
+		internal static IValue? Parse(Stream stream) {
 			while (!stream.IsEmpty()) {
 				// strip comments.
 				if (stream.TakeWhileIfStartsWith('#', c => c != '\n') != null)
 					continue;
 
 				// strip whitespace.
-				if (stream.TakeWhile(c => char.IsWhiteSpace(c) || "(){}[]:".Contains(c)) != null)
+				if (stream.TakeWhile(c => char.IsWhiteSpace(c) || "():".Contains(c)) != null)
 					continue;
 
 				// if we neither had comments or whitespace, break out.
@@ -26,12 +26,14 @@ namespace Knight
 			if (stream.IsEmpty())
 				return null;
 
-			return Number.Parse(stream) ??
+
+			return Integer.Parse(stream) ??
 				Boolean.Parse(stream) ?? 
 				Text.Parse(stream) ??
 				Null.Parse(stream) ??
 				Variable.Parse(stream) ??
-				(IValue) Function.Parse(stream); // cast is needed so typechecking passes.
+				List.Parse(stream) ??
+				(IValue?) Function.Parse(stream); // cast is needed so typechecking passes.
 		}
 
 		/// <summary>
@@ -42,13 +44,11 @@ namespace Knight
 		public static IValue Run(string stream) => Run(new Stream(stream));
 
 		internal static IValue Run(Stream stream) {
+			Console.WriteLine(List.Parse(stream));
 			if (stream.IsEmpty())
 				throw new ParseException("nothing to parse.");
 
-			IValue value = Parse(stream);
-			
-			if (value == null)
-				throw new ParseException($"Unknown token start '{stream.Take()}'.");
+			IValue value = Parse(stream) ?? throw new ParseException($"Unknown token start '{stream.Take()}'.");
 
 			return value.Run();
 		}

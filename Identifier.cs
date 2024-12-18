@@ -13,7 +13,7 @@ namespace Knight
     {
 		private static Dictionary<string, Variable> ENV = new Dictionary<string, Variable>();
 
-		internal static Variable Parse(Stream stream) {
+		internal static Variable? Parse(Stream stream) {
 			bool isLower(char c) => char.IsLower(c) || c == '_';
 
 			var name = stream.TakeWhileIfStartsWith(isLower, c => isLower(c) || char.IsDigit(c));
@@ -21,18 +21,16 @@ namespace Knight
 			if (name == null)
 				return null;
 			
-			Variable variable;
+			Variable? variable;
 
-			if (!ENV.TryGetValue(name, out variable)) {
-				variable = new Variable(name);
-				ENV.Add(name, variable);
-			}
+			if (!ENV.TryGetValue(name, out variable))
+				ENV.Add(name, variable = new Variable(name));
 			
 			return variable;
 		}
 
 		private string _name;
-		private IValue _value;
+		private IValue? _value;
 
 		/// <summary>
 		/// Create a new identifier with the given <paramref name="name">.
@@ -46,12 +44,7 @@ namespace Knight
 		/// Fetches the value associated with this identifier.
 		/// </summary>
     	/// <exception cref="RuntimeException">Thrown if the identifier hasn't been assigned to yet.</exception>
-		public override IValue Run() {
-			if (_value == null)
-				throw new RuntimeException($"Unknown identifier '{_name}'.");
-
-			return _value;
-		}
+		public override IValue Run() => _value ?? throw new RuntimeException($"Unknown identifier '{_name}'.");
 
 		/// <summary>
 		/// Associates <paramref name="value"/> with this identifier.

@@ -44,6 +44,8 @@ namespace Knight
 		/// </summary>
 		long ToLong();
 
+		IValue[] ToList();
+
 		/// <summary>
 		/// Performs the <c>+</c> operation.
 		/// </summary>

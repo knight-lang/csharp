@@ -17,7 +17,7 @@ namespace Knight
 	/// </summary>
 	public class Null : Literal<_unit>
 	{
-		internal static Null Parse(Stream stream) {
+		internal static Null? Parse(Stream stream) {
 			if (!stream.StartsWith('N'))
 				return null;
 
@@ -32,12 +32,12 @@ namespace Knight
 		public Null() : base(new _unit()) {}
 
 		/// <inheritdoc/>
-		public override void Dump() => Console.Write("Null()");
+		public override void Dump() => Console.Write("null");
 
 		/// <summary>
 		/// Simply returns <c>"null"</c>.
 		/// </summary>
-		public override string ToString() => "null";
+		public override string ToString() => "";
 
 		/// <summary>
 		/// Simply returns <c>false</c>.
@@ -48,5 +48,7 @@ namespace Knight
 		/// Simply returns <c>0</c>.
 		/// </summary>
 		public override long ToLong() => 0;
+
+		public override IValue[] ToList() => new IValue[]{};
 	}
 }

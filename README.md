@@ -5,5 +5,5 @@ This is a [Knight](https://github.com/knight-lang/knight-lang) implementation in
 ## Compiling
 I used the following command to build the C# executable (so I could test and time it):
 ```sh
-dotnet publish -c Release --self-contained -r osx.10.12-x64
+dotnet publish -c Release --self-contained
 ```

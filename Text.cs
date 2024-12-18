@@ -11,17 +11,14 @@ namespace Knight
 	/// </remarks>
 	public class Text : Literal<string>, IComparable<IValue>
 	{
-		internal static Text Parse(Stream stream) {
+		internal static Text? Parse(Stream stream) {
 			if (!stream.StartsWith('\'', '\"'))
 				return null;
 			
 			char quote = stream.Take();
 			var start = stream.Source;
 
-			string data = stream.TakeWhile(c => c != quote);
-
-			if (stream.IsEmpty())
-				throw new RuntimeException($"unterminated string, starting at {start}");
+			string data = stream.TakeWhile(c => c != quote) ?? throw new RuntimeException($"unterminated string, starting at {start}");
 
 			stream.Take(); // remove trailling quote.
 
@@ -32,7 +29,11 @@ namespace Knight
 		public Text(string data) : base(data) {}
 
 		/// <inheritdoc/>
-		public override void Dump() => Console.Write($"String({_data})");
+		public override void Dump() {
+			Console.Write('"');
+			Console.Write(_data); // TODO
+			Console.Write('"');
+		}
 
 		/// <summary>
 		/// Returns whether <c>this</c> is empty.
@@ -67,6 +68,11 @@ namespace Knight
 			return ret;
 		}
 
+		public override IValue[] ToList() {
+			// TODO
+			throw new RuntimeException("TODO");
+		}
+
 		/// <summary>
 		/// Returns <c>this</c> concatenated with the <c>string</c> representation of <paramref name="rhs"/>.
 		/// </summary>
@@ -93,6 +99,6 @@ namespace Knight
 		/// <summary>
 		/// Compares <c>this</c> with <paramref name="obj"/> according to the Knight specs. (ie ASCII string comparison.)
 		/// </summary>
-		public int CompareTo(IValue obj) => string.Compare(_data, obj.ToString(), StringComparison.Ordinal);
+		public int CompareTo(IValue? obj) => string.Compare(_data, obj?.ToString(), StringComparison.Ordinal);
 	}
 }

@@ -4,7 +4,7 @@ namespace Knight
 {
 	/// <summary>
 	/// The interface which all values within Knight implement.
-	/// </summary> 
+	/// </summary>
 	public interface IValue : IEquatable<IValue>
 	{
 		/// <summary>

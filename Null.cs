@@ -17,9 +17,12 @@ namespace Knight
 	/// </summary>
 	public class Null : Literal<_unit>
 	{
-		internal static Null? Parse(Stream stream) {
+		internal static Null? Parse(Stream stream)
+		{
 			if (!stream.StartsWith('N'))
+			{
 				return null;
+			}
 
 			stream.StripKeyword();
 

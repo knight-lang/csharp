@@ -21,7 +21,8 @@ namespace Knight
 		private char _name;
 
 		// note that this is private because we don't want people associating random `name`s with unrelated `function`s.
-		private Function(FunctionBody function, char name, IValue[] args) {
+		private Function(FunctionBody function, char name, IValue[] args)
+		{
 			_function = function;
 			_args = args;
 			_name = name;
@@ -33,15 +34,20 @@ namespace Knight
 		public override IValue Run() => _function(_args);
 
 		/// <inheritdoc/>
-		public override void Dump() {
+		public override void Dump()
+		{
 			Console.Write("Function(");
 
 			var first = true;
 
-			foreach (var arg in _args) {
-				if (first) {
+			foreach (var arg in _args)
+			{
+				if (first)
+				{
 					first = false;
-				} else {
+				}
+				else
+				{
 					Console.Write(", ");
 				}
 
@@ -57,21 +63,27 @@ namespace Knight
 		/// </summary>
 		public static void Register(char name, int arity, FunctionBody body) => FUNCTIONS[name] = (body, arity);
 
-		internal static Function? Parse(Stream stream) {
+		internal static Function? Parse(Stream stream)
+		{
 			(FunctionBody?, int) func = (null, 0);
 			char name;
 
 			#nullable disable
 			if (!stream.StartsWith(c => FUNCTIONS.TryGetValue(c, out func)))
+			{
 				return null;
+			}
 			#nullable enable
 
 			if (char.IsUpper(name = stream.Take()))
+			{
 				stream.StripKeyword();
+			}
 
 			var args = new IValue[func.Item2];
 
-			for (int i = 0; i < func.Item2; ++i) {
+			for (int i = 0; i < func.Item2; ++i)
+			{
 				args[i] = Kn.Parse(stream) ?? throw new ParseException($"Unable to parse variable '{i}' for function '{name}'.");
 			}
 
@@ -83,7 +95,8 @@ namespace Knight
 		/// <summary>
 		/// Reads a line from stdin.
 		/// </summary>
-		private static IValue Prompt(params IValue[] args) {
+		private static IValue Prompt(params IValue[] args)
+		{
 			var line = Console.ReadLine();
 			return line == null ? (IValue) new Null() : (IValue)new Text(line);
 		}
@@ -113,7 +126,8 @@ namespace Knight
 		/// <summary>
 		/// Runs the first argument as a shell command and returns the stdout of the command.
 		/// </summary>
-		private static IValue System(params IValue[] args) {
+		private static IValue System(params IValue[] args)
+		{
 			Process proc = new Process();
 
 			// Redirect the output stream of the child process.
@@ -134,7 +148,8 @@ namespace Knight
 		/// <summary>
 		/// Stops the program execution with the given status code.
 		/// </summary>
-		private static IValue Quit(params IValue[] args) {
+		private static IValue Quit(params IValue[] args)
+		{
 			Environment.Exit((int) args[0].ToLong());
 			return null;
 		}
@@ -152,10 +167,11 @@ namespace Knight
 		/// <summary>
 		/// Dumps the first argument to stdout, then returns it.
 		/// </summary>
-		private static IValue Dump(params IValue[] args) {
+		private static IValue Dump(params IValue[] args)
+		{
 			var val = args[0].Run();
 			val.Dump();
-			return val;	
+			return val;
 		}
 
 		/// <summary>
@@ -164,12 +180,16 @@ namespace Knight
 		/// <returns>
 		/// <c>Null</c>.
 		/// </returns>
-		private static IValue Output(params IValue[] args) {
+		private static IValue Output(params IValue[] args)
+		{
 			var val = args[0].ToString();
 
-			if (val != "" && val[^1] == '\\') {
+			if (val != "" && val[^1] == '\\')
+			{
 				Console.Write(val.Remove(val.Length - 1));
-			} else {
+			}
+			else
+			{
 				Console.WriteLine(val);
 			}
 
@@ -185,20 +205,26 @@ namespace Knight
 		{
 			var ran = args[0].Run();
 
-			if (ran is Integer) {
+			if (ran is Integer)
+			{
 				return new Text(((global::System.Text.Rune) (int) ran.ToLong()).ToString());
-			} else {
+			}
+			else
+			{
 				return new Integer((long) (global::System.Text.Rune.GetRuneAt(ran.ToString(), 0)).Value);
 			}
 		}
 		private static IValue Box(params IValue[] args) => new List(args[0].Run());
-		private static IValue Head(params IValue[] args) => args[0].ToList()[0];	
+		private static IValue Head(params IValue[] args) => args[0].ToList()[0];
 		private static IValue Tail(params IValue[] args)
 		{
 			var ran = args[0].Run();
-			if (ran is Text) {
+			if (ran is Text)
+			{
 				return new Text(ran.ToString()[1..]);
-			} else {
+			}
+			else
+			{
 				return new List(ran.ToList()[1..]);
 			}
 		}
@@ -254,7 +280,7 @@ namespace Knight
 		private static IValue And(params IValue[] args)
 		{
 			var lhs = args[0].Run();
-				
+
 			return lhs.ToBool() ? args[1].Run() : lhs;
 		}
 
@@ -264,7 +290,7 @@ namespace Knight
 		private static IValue Or(params IValue[] args)
 		{
 			var lhs = args[0].Run();
-				
+
 			return lhs.ToBool() ? lhs : args[1].Run();
 		}
 
@@ -295,7 +321,9 @@ namespace Knight
 		private static IValue While(params IValue[] args)
 		{
 			while (args[0].ToBool())
+			{
 				args[1].Run();
+			}
 
 			return new Null();
 		}

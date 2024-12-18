@@ -6,7 +6,7 @@ namespace Knight
 	/// The string (ie "text") class within Knight.
 	/// </summmary>
 	/// <remarks>
-	/// While we could have named this class <c>String</c> to keep in line with the Knight specs, it would have clashed with 
+	/// While we could have named this class <c>String</c> to keep in line with the Knight specs, it would have clashed with
 	/// C#'s <c>System.String</c>. As such, we go with this replacement instead.
 	/// </remarks>
 	public class Text : Literal<string>, IComparable<IValue>
@@ -14,8 +14,10 @@ namespace Knight
 		internal static Text? Parse(Stream stream)
 		{
 			if (!stream.StartsWith('\'', '\"'))
+			{
 				return null;
-			
+			}
+
 			char quote = stream.Take();
 			var start = stream.Source;
 
@@ -55,18 +57,26 @@ namespace Knight
 			var str = _data.TrimStart();
 
 			if (str == "")
+			{
 				return 0;
+			}
 
 			var isNegative = str[0] == '-';
 
-			if (str[0] == '-' || str[0] == '+')
+			if (isNegative || str[0] == '+')
+			{
 				str = str.Substring(1);
+			}
 
 			for (; str != "" && char.IsDigit(str[0]); str = str.Substring(1))
+			{
 				ret = ret * 10 + (str[0] - '0');
+			}
 
 			if (isNegative)
+			{
 				ret *= -1;
+			}
 
 			return ret;
 		}
@@ -92,16 +102,21 @@ namespace Knight
 		/// Returns <c>this</c> replicated <paramref name="rhs"/> times (When converted to a <c>long</c>).
 		/// </summary>
 		/// <exception cref="RuntimeException">Thrown if <paramref name="rhs"/> is negative. </exception>
-		public override IValue Mul(IValue rhs) {
+		public override IValue Mul(IValue rhs)
+		{
 			var amnt = rhs.ToLong();
 
 			if (amnt < 0)
+			{
 				throw new RuntimeException($"Cannot repeat by a negative amount '{amnt}'.");
+			}
 
 			var s = "";
 
 			for (long i = 0; i < amnt; ++i)
+			{
 				s += _data;
+			}
 
 			return new Text(s);
 		}

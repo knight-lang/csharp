@@ -11,19 +11,26 @@ namespace Knight
 		public bool Equals(_list other)
         {
             if (_eles.Length != other._eles.Length)
+            {
                 return false;
+            }
 
             for (int i = 0; i < _eles.Length; ++i)
+            {
                 if (!_eles[i].Equals(other._eles[i]))
+                {
                     return false;
-            
+                }
+            }
+
             return true;
         }
 	}
 
 	public class List : Literal<_list>, IComparable<IValue>
     {
-        private IValue[] _eles {
+        private IValue[] _eles
+        {
             get => _data._eles;
         }
 
@@ -44,24 +51,30 @@ namespace Knight
             Console.Write('[');
 
             bool first = true;
-            foreach (var item in _eles) {
-                if (first) {
+            foreach (var item in _eles)
+            {
+                if (first)
+                {
                     first = false;
-                } else {
+                }
+                else
+                {
                     Console.Write(", ");
                 }
                 item.Dump();
             }
-            
+
             Console.Write(']');
         }
 
-		public int CompareTo(IValue? other) {
+		public int CompareTo(IValue? other)
+        {
             // TODO
             return 1;
         }
 
-        public override IValue Add(IValue rhs) {
+        public override IValue Add(IValue rhs)
+        {
             var other = rhs.ToList();
             var combined = new IValue[_eles.Length + other.Length];
 
@@ -71,7 +84,8 @@ namespace Knight
             return new List(combined);
         }
 
-        public override IValue Mul(IValue rhs) {
+        public override IValue Mul(IValue rhs)
+        {
             var amount = rhs.ToLong();
             var result = new IValue[_eles.Length * amount];
 

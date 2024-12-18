@@ -21,24 +21,31 @@ namespace Knight
 
 		public string? TakeWhileIfStartsWith(char chr, Condition body) => TakeWhileIfStartsWith(c => c == chr, body);
 		public string? TakeWhileIfStartsWith(char[] chars, Condition body) => TakeWhileIfStartsWith(chars.Contains, body);
-		public string? TakeWhileIfStartsWith(Condition initial, Condition? body = null) {
+		public string? TakeWhileIfStartsWith(Condition initial, Condition? body = null)
+		{
 			if (!initial(Source[0]))
+			{
 				return null;
-			
+			}
+
 			return Take() + (TakeWhile(body ?? initial) ?? "");
 		}
 
-		public char Take() {
+		public char Take()
+		{
 			char c = Source[0];
 			Source = Source.Substring(1);
 			return c;
 		}
 
-		public string? TakeWhile(Condition condition) {
+		public string? TakeWhile(Condition condition)
+		{
 			var ret = "";
 
 			while (!IsEmpty() && condition(Source[0]))
+			{
 				ret += Take();
+			}
 
 			return ret == "" ? null : ret;
 		}

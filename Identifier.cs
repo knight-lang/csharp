@@ -13,19 +13,24 @@ namespace Knight
     {
 		private static Dictionary<string, Variable> ENV = new Dictionary<string, Variable>();
 
-		internal static Variable? Parse(Stream stream) {
+		internal static Variable? Parse(Stream stream)
+		{
 			bool isLower(char c) => char.IsLower(c) || c == '_';
 
 			var name = stream.TakeWhileIfStartsWith(isLower, c => isLower(c) || char.IsDigit(c));
-			
+
 			if (name == null)
+			{
 				return null;
-			
+			}
+
 			Variable? variable;
 
 			if (!ENV.TryGetValue(name, out variable))
+			{
 				ENV.Add(name, variable = new Variable(name));
-			
+			}
+
 			return variable;
 		}
 

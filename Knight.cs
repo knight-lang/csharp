@@ -8,15 +8,21 @@ namespace Knight
 	/// </summary>
 	public class Kn
 	{
-		internal static IValue? Parse(Stream stream) {
-			while (!stream.IsEmpty()) {
+		internal static IValue? Parse(Stream stream)
+		{
+			while (!stream.IsEmpty())
+			{
 				// strip comments.
 				if (stream.TakeWhileIfStartsWith('#', c => c != '\n') != null)
+				{
 					continue;
+				}
 
 				// strip whitespace.
 				if (stream.TakeWhile(c => char.IsWhiteSpace(c) || "():".Contains(c)) != null)
+				{
 					continue;
+				}
 
 				// if we neither had comments or whitespace, break out.
 				break;
@@ -24,11 +30,13 @@ namespace Knight
 
 			// nothing parsed.
 			if (stream.IsEmpty())
+			{
 				return null;
+			}
 
 
 			return Integer.Parse(stream) ??
-				Boolean.Parse(stream) ?? 
+				Boolean.Parse(stream) ??
 				Text.Parse(stream) ??
 				Null.Parse(stream) ??
 				Variable.Parse(stream) ??
@@ -43,9 +51,12 @@ namespace Knight
 		/// <exception cref="RuntimeException">Thrown if there was a problem when running the parsed code. </exception>
 		public static IValue Run(string stream) => Run(new Stream(stream));
 
-		internal static IValue Run(Stream stream) {
+		internal static IValue Run(Stream stream)
+		{
 			if (stream.IsEmpty())
+			{
 				throw new ParseException("nothing to parse.");
+			}
 
 			IValue value = Parse(stream) ?? throw new ParseException($"Unknown token start '{stream.Take()}'.");
 
@@ -58,19 +69,26 @@ namespace Knight
 		/// <param name="args">
 		/// The arguments to the executable---should either be <c>"-e", "&lt;expression&gt;"</c> or <c>"-f", "&lt;filename&gt;"</c>.
 		/// </param>
-		public static int Main(string[] args) {
-			if (args.Length != 2 || args[0] != "-e" && args[0] != "-f") {
+		public static int Main(string[] args)
+		{
+			if (args.Length != 2 || args[0] != "-e" && args[0] != "-f")
+			{
 				Console.Error.WriteLine("usage: {0} (-e 'program' | -f file)", Environment.GetCommandLineArgs()[0]);
 				return 1;
 			}
 
-			try {
+			try
+			{
 				Run(args[0] == "-e" ? args[1] : File.ReadAllText(args[1]));
 				return 0;
-			} catch (KnightException err) {
+			}
+			catch (KnightException err)
+			{
 				Console.Error.WriteLine("Invalid program: {0}", err.Message);
 				return 1;
-			} catch (Exception err) {
+			}
+			catch (Exception err)
+			{
 				Console.Error.WriteLine("Unexpected exception encountered: {0}", err.Message);
 				return 1;
 			}

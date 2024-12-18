@@ -11,7 +11,8 @@ namespace Knight
 	/// </remarks>
 	public class Text : Literal<string>, IComparable<IValue>
 	{
-		internal static Text? Parse(Stream stream) {
+		internal static Text? Parse(Stream stream)
+		{
 			if (!stream.StartsWith('\'', '\"'))
 				return null;
 			
@@ -29,9 +30,10 @@ namespace Knight
 		public Text(string data) : base(data) {}
 
 		/// <inheritdoc/>
-		public override void Dump() {
+		public override void Dump()
+		{
 			Console.Write('"');
-			Console.Write(_data); // TODO
+			Console.Write(System.Text.Json.JsonEncodedText.Encode(_data).Value);
 			Console.Write('"');
 		}
 
@@ -47,7 +49,8 @@ namespace Knight
 		/// Roughly, you strip all leading whitespace, and then read an optional <c>+</c> or <c>-</c>, and then take as many
 		/// digit chars as possible, returning <c>0</c> if there are no valid leading digits.
 		/// </summary>
-		public override long ToLong() {
+		public override long ToLong()
+		{
 			long ret = 0;
 			var str = _data.TrimStart();
 
@@ -68,9 +71,16 @@ namespace Knight
 			return ret;
 		}
 
-		public override IValue[] ToList() {
-			// TODO
-			throw new RuntimeException("TODO");
+		public override IValue[] ToList()
+		{
+			var list = new IValue[_data.Length];
+
+			for (int i = 0; i < _data.Length; i++)
+			{
+				list[i] = new Text(_data[i]);
+			}
+
+			return list;
 		}
 
 		/// <summary>

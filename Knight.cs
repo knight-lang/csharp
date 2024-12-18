@@ -44,7 +44,6 @@ namespace Knight
 		public static IValue Run(string stream) => Run(new Stream(stream));
 
 		internal static IValue Run(Stream stream) {
-			Console.WriteLine(List.Parse(stream));
 			if (stream.IsEmpty())
 				throw new ParseException("nothing to parse.");
 

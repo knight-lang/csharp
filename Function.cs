@@ -147,7 +147,7 @@ namespace Knight
 		/// <summary>
 		/// Converts the first argument to a string, then returns its length.
 		/// </summary>
-		private static IValue Length(params IValue[] args) => new Integer(args[0].ToString().Length);
+		private static IValue Length(params IValue[] args) => new Integer(args[0].ToList().Length);
 
 		/// <summary>
 		/// Dumps the first argument to stdout, then returns it.
@@ -181,40 +181,57 @@ namespace Knight
 		/// </summary>
 		private static IValue Negate(params IValue[] args) => new Integer(-args[0].ToLong());
 
-		private static IValue Ascii(params IValue[] args) => throw new Exception("TODO");
+		private static IValue Ascii(params IValue[] args)
+		{
+			var ran = args[0].Run();
+
+			if (ran is Integer) {
+				return new Text(((global::System.Text.Rune) (int) ran.ToLong()).ToString());
+			} else {
+				return new Integer((long) (global::System.Text.Rune.GetRuneAt(ran.ToString(), 0)).Value);
+			}
+		}
 		private static IValue Box(params IValue[] args) => new List(args[0].Run());
-		private static IValue Head(params IValue[] args) => throw new Exception("TODO");
-		private static IValue Tail(params IValue[] args) => throw new Exception("TODO");
+		private static IValue Head(params IValue[] args) => args[0].ToList()[0];	
+		private static IValue Tail(params IValue[] args)
+		{
+			var ran = args[0].Run();
+			if (ran is Text) {
+				return new Text(ran.ToString()[1..]);
+			} else {
+				return new List(ran.ToList()[1..]);
+			}
+		}
 
 		/// <summary>
 		/// Adds the first and second arguments together.
 		/// </summary>
-		private static IValue Add(params IValue[] args) => args[0].Run().Add(args[1].Run());
+		private static IValue Add(params IValue[] args) => args[0].Add(args[1]);
 
 		/// <summary>
 		/// Subtracts the second argument from the first.
 		/// </summary>
-		private static IValue Sub(params IValue[] args) => args[0].Run().Sub(args[1].Run());
+		private static IValue Sub(params IValue[] args) => args[0].Sub(args[1]);
 
 		/// <summary>
 		/// Multiplies the first and second arguments together.
 		/// </summary>
-		private static IValue Mul(params IValue[] args) => args[0].Run().Mul(args[1].Run());
+		private static IValue Mul(params IValue[] args) => args[0].Mul(args[1]);
 
 		/// <summary>
 		/// Divides the first argument by the second.
 		/// </summary>
-		private static IValue Div(params IValue[] args) => args[0].Run().Div(args[1].Run());
+		private static IValue Div(params IValue[] args) => args[0].Div(args[1]);
 
 		/// <summary>
 		/// Modulos the first argument by the second.
 		/// </summary>
-		private static IValue Mod(params IValue[] args) => args[0].Run().Mod(args[1].Run());
+		private static IValue Mod(params IValue[] args) => args[0].Mod(args[1]);
 
 		/// <summary>
 		/// Exponentiates the first argument by the second.
 		/// </summary>
-		private static IValue Pow(params IValue[] args) => args[0].Run().Pow(args[1].Run());
+		private static IValue Pow(params IValue[] args) => args[0].Pow(args[1]);
 
 		/// <summary>
 		/// Returns whether the first and second arguments are equal.
@@ -234,7 +251,8 @@ namespace Knight
 		/// <summary>
 		/// Returns the first argument if it's falsey, otherwise executes and returns the second.
 		/// </summary>
-		private static IValue And(params IValue[] args) {
+		private static IValue And(params IValue[] args)
+		{
 			var lhs = args[0].Run();
 				
 			return lhs.ToBool() ? args[1].Run() : lhs;
@@ -243,7 +261,8 @@ namespace Knight
 		/// <summary>
 		/// Returns the first argument if it's true, otherwise executes and returns the second.
 		/// </summary>
-		private static IValue Or(params IValue[] args) {
+		private static IValue Or(params IValue[] args)
+		{
 			var lhs = args[0].Run();
 				
 			return lhs.ToBool() ? lhs : args[1].Run();
@@ -252,7 +271,8 @@ namespace Knight
 		/// <summary>
 		/// Executes the first argument, then executes and returns the second.
 		/// </summary>
-		private static IValue Then(params IValue[] args) {
+		private static IValue Then(params IValue[] args)
+		{
 			args[0].Run();
 			return args[1].Run();
 		}
@@ -260,7 +280,8 @@ namespace Knight
 		/// <summary>
 		/// Assigns the second argument to the first. The first should be a <c>Variable</c>.
 		/// </summary>
-		private static IValue Assign(params IValue[] args) {
+		private static IValue Assign(params IValue[] args)
+		{
 			var rhs = args[1].Run();
 
 			((Variable) args[0]).Assign(rhs);
@@ -271,7 +292,8 @@ namespace Knight
 		/// <summary>
 		/// Runs the second argument whilst the first is truth
 		/// </summary>
-		private static IValue While(params IValue[] args) {
+		private static IValue While(params IValue[] args)
+		{
 			while (args[0].ToBool())
 				args[1].Run();
 
@@ -286,7 +308,8 @@ namespace Knight
 		/// <summary>
 		/// Returns a substring of the first argument, starting at the second with the length of the third.
 		/// </summary>
-		private static IValue Get(params IValue[] args) {
+		private static IValue Get(params IValue[] args)
+		{
 			var str = args[0].ToString();
 			var start = (int) args[1].ToLong();
 			var length = (int) args[2].ToLong();
@@ -297,7 +320,8 @@ namespace Knight
 		/// <summary>
 		/// Returns the first argument, with the range [argument 2, argument 2+argument 3) replaced by the fourth argument.
 		/// </summary>
-		private static IValue Substitute(params IValue[] args) {
+		private static IValue Substitute(params IValue[] args)
+		{
 			var str = args[0].ToString();
 			var start = (int) args[1].ToLong();
 			var length = (int) args[2].ToLong();
@@ -308,7 +332,8 @@ namespace Knight
 
 		// registers all the functions for this class.
 		// note that we use named functions so we can profile better.
-		static Function() {
+		static Function()
+		{
 			Register('P', 0, Prompt);
 			Register('R', 0, Random);
 
@@ -326,6 +351,9 @@ namespace Knight
 			Register(',', 1, Box);
 			Register('[', 1, Head);
 			Register(']', 1, Tail);
+			#if ! EMBEDDED
+				Register('$', 1, System);
+			#endif
 
 			Register('+', 2, Add);
 			Register('-', 2, Sub);
